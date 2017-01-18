@@ -1,0 +1,30 @@
+group GROUP
+version VERSION_NAME
+
+buildscript {
+    ext.kotlin_version = '1.0.6'
+
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+
+apply plugin: 'kotlin'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile gradleApi()
+    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+
+    compile 'com.atlassian.commonmark:commonmark:0.8.0'
+    compile 'com.google.code.maven-play-plugin.net.sf.jtidy:jtidy:r938'
+    compile 'org.xhtmlrenderer:flying-saucer-pdf:9.1.1'
+
+    testCompile 'junit:junit:4.12'
+}
