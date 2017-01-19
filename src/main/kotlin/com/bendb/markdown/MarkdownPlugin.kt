@@ -14,12 +14,10 @@ import java.io.File
 import java.io.StringWriter
 import javax.inject.Inject
 
-class MarkdownPlugin @Inject constructor(
-        fileResolver: FileResolver
-): Plugin<Project> {
+class MarkdownPlugin: Plugin<Project> {
     internal val sourceSetProvider: MarkdownSourceSetProvider
 
-    init {
+    @Inject constructor(fileResolver: FileResolver) {
         sourceSetProvider = MarkdownSourceSetProviderImpl(fileResolver)
     }
 
@@ -37,29 +35,11 @@ class MarkdownPlugin @Inject constructor(
             val taskName = sourceSet.getTaskName("generate", "MarkdownDocs")
             project.tasks.create(taskName, MarkdownTask::class.java).apply {
                 setSource(markdownSourceSet.markdown)
+                sourceRoot = File(project.projectDir, srcDir)
                 outputDirectory = File(project.buildDir, "outputs/markdown")
                 description = "Generates ${sourceSet.name} Markdown documentation"
                 group = "reporting"
             }
-        }
-    }
-}
-
-fun tidyUp(html: String): String {
-    val tidy = Tidy().apply {
-        inputEncoding  = "UTF-8"
-        outputEncoding = "UTF-8"
-        xhtml          = true
-
-        quiet          = true
-        showErrors     = 0 // number of errors to emit
-        showWarnings   = false
-    }
-
-    html.reader().use { reader ->
-        StringWriter().use { writer ->
-            tidy.parse(reader, writer)
-            return writer.toString()
         }
     }
 }
